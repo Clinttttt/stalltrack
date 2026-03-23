@@ -58,9 +58,9 @@
 
   /* ── SECTIONS ── */
   section {
-    min-height: 100vh;
+    min-height: unset;
     display: flex; flex-direction: column; justify-content: center;
-    padding: 7rem 6vw 4rem;
+    padding: 3.5rem 6vw 2.5rem;
     position: relative;
   }
 
@@ -68,6 +68,7 @@
   #cover {
     background: var(--navy);
     overflow: hidden;
+    padding-top: 6rem;
   }
   #cover::before {
     content: '';
@@ -134,7 +135,7 @@
   }
   .section-lead {
     color: var(--gray); max-width: 680px; line-height: 1.7;
-    font-size: 1rem; margin-bottom: 2.5rem;
+    font-size: 1rem; margin-bottom: 1.5rem;
   }
 
   /* dark sections */
@@ -341,7 +342,7 @@
   /* responsive */
   @media (max-width: 680px) {
     .cover-seal { display: none; }
-    section { padding: 6rem 5vw 3rem; }
+    section { padding: 3rem 5vw 2rem; }
     .sync-arrow-col { flex-direction: row; padding-top: 0; padding: .5rem 0; }
   }
 
@@ -354,9 +355,10 @@
 
   /* page number watermark */
   .pg-mark {
-    position: absolute; bottom: 2.5rem; right: 6vw;
+    text-align: right;
     font-family: 'Cormorant Garamond', serif; font-size: .85rem;
     color: rgba(201,151,43,.4); letter-spacing: .08em;
+    margin-top: 1.5rem;
   }
 </style>
 </head>
@@ -1002,7 +1004,7 @@
 
     /* SECTIONS */
     section {
-      padding: 5.5rem 5vw 3rem;
+      padding: 3rem 5vw 2rem;
       min-height: auto;
     }
 
