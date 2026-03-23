@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StallTrack – A Digital Management System for Commercial Stall Rents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lato:wght@300;400;700&family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy:   #0d1f3c;
+    --navy2:  #162d57;
+    --gold:   #c9972b;
+    --gold2:  #e8b94a;
+    --cream:  #f5f0e8;
+    --white:  #ffffff;
+    --smoke:  #e8edf5;
+    --gray:   #7a8a9e;
+    --green:  #2e7d52;
+    --red:    #b84040;
+    --accent: #1a56a0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--cream);
+    color: var(--navy);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--navy);
+    border-bottom: 2px solid var(--gold);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem;
+    height: 54px;
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem; font-weight: 700;
+    color: var(--gold);
+    letter-spacing: .04em;
+  }
+  .nav-links { display: flex; gap: .25rem; }
+  .nav-links a {
+    color: #a0b4cc; font-size: .72rem; text-transform: uppercase;
+    letter-spacing: .07em; text-decoration: none;
+    padding: .35rem .7rem; border-radius: 3px;
+    transition: color .2s, background .2s;
+  }
+  .nav-links a:hover { color: var(--gold2); background: rgba(201,151,43,.1); }
+
+  /* ── SECTIONS ── */
+  section {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 7rem 6vw 4rem;
+    position: relative;
+  }
+
+  /* ── COVER ── */
+  #cover {
+    background: var(--navy);
+    overflow: hidden;
+  }
+  #cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 40%, rgba(26,86,160,.35) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(201,151,43,.12) 0%, transparent 60%);
+  }
+  .cover-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: rgba(201,151,43,.15);
+    border: 1px solid var(--gold);
+    color: var(--gold2); font-size: .72rem;
+    letter-spacing: .1em; text-transform: uppercase;
+    padding: .35rem 1rem; border-radius: 2px;
+    margin-bottom: 2rem;
+  }
+  .cover-badge span { font-size: .9rem; }
+  h1.cover-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 5vw, 4.2rem);
+    font-weight: 700; color: var(--white);
+    line-height: 1.12; max-width: 800px;
+    margin-bottom: .6rem;
+  }
+  h1.cover-title em {
+    color: var(--gold2); font-style: normal;
+    display: inline-block;
+    border-bottom: 3px solid var(--gold);
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+  }
+  .cover-sub {
+    color: #a0b4cc; font-size: 1.05rem; font-weight: 300;
+    max-width: 640px; margin-bottom: 2.5rem; line-height: 1.6;
+  }
+  .cover-meta {
+    display: flex; flex-wrap: wrap; gap: 2rem;
+  }
+  .meta-item { display: flex; flex-direction: column; gap: .3rem; }
+  .meta-label { color: var(--gold); font-size: .68rem; text-transform: uppercase; letter-spacing: .12em; }
+  .meta-value { color: var(--white); font-size: .9rem; font-weight: 700; }
+  .cover-seal {
+    position: absolute; right: 3vw; top: 50%; transform: translateY(-50%);
+    opacity: .06; font-size: 22rem; line-height: 1;
+    font-family: 'Cormorant Garamond', serif; font-weight: 700;
+    color: var(--gold); pointer-events: none; user-select: none;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-label {
+    font-size: .68rem; text-transform: uppercase; letter-spacing: .14em;
+    color: var(--gold); margin-bottom: .6rem;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .section-label::after {
+    content: ''; flex: 0 0 40px; height: 1px; background: var(--gold);
+  }
+  h2.section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 700; color: var(--navy);
+    margin-bottom: 1rem; line-height: 1.15;
+  }
+  .section-lead {
+    color: var(--gray); max-width: 680px; line-height: 1.7;
+    font-size: 1rem; margin-bottom: 2.5rem;
+  }
+
+  /* dark sections */
+  section.dark { background: var(--navy); }
+  section.dark h2.section-title { color: var(--white); }
+  section.dark .section-lead { color: #8aa0bb; }
+
+  /* ── CARDS ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
+  .card {
+    background: var(--white);
+    border: 1px solid #d5dde8;
+    border-top: 3px solid var(--gold);
+    border-radius: 4px;
+    padding: 1.5rem;
+    transition: box-shadow .2s, transform .2s;
+  }
+  .card:hover { box-shadow: 0 6px 24px rgba(13,31,60,.1); transform: translateY(-2px); }
+  .card-icon { font-size: 1.8rem; margin-bottom: .8rem; }
+  .card-title { font-weight: 700; font-size: .95rem; margin-bottom: .5rem; color: var(--navy); }
+  .card-desc { font-size: .87rem; color: var(--gray); line-height: 1.6; }
+  .card.dark-card {
+    background: var(--navy2);
+    border-color: rgba(201,151,43,.3);
+    border-top-color: var(--gold);
+  }
+  .card.dark-card .card-title { color: var(--white); }
+  .card.dark-card .card-desc { color: #8aa0bb; }
+
+  /* ── FLOW DIAGRAM ── */
+  .flow-wrap {
+    background: var(--white);
+    border: 1px solid #d5dde8; border-radius: 6px;
+    padding: 2rem; overflow-x: auto;
+  }
+  .flow {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 0;
+    min-width: 600px;
+  }
+  .flow-node {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: .4rem;
+    min-width: 120px;
+  }
+  .flow-box {
+    background: var(--navy);
+    color: var(--white); font-size: .78rem; font-weight: 700;
+    padding: .7rem 1rem; border-radius: 4px;
+    border: 2px solid var(--gold);
+    width: 120px; line-height: 1.3;
+  }
+  .flow-box.green { background: var(--green); border-color: #3da86e; }
+  .flow-box.blue  { background: var(--accent); border-color: #2d7ae0; }
+  .flow-box.gold  { background: var(--gold);  border-color: var(--gold2); color: var(--navy); }
+  .flow-arrow {
+    font-size: 1.4rem; color: var(--gold); margin: 0 .3rem;
+    flex-shrink: 0;
+  }
+  .flow-sub { font-size: .67rem; color: var(--gray); max-width: 110px; }
+
+  /* ── ARCH DIAGRAM ── */
+  .arch { display: flex; flex-direction: column; gap: 1.2rem; }
+  .arch-layer {
+    display: flex; align-items: stretch; gap: 1rem;
+    border-left: 3px solid var(--gold);
+    padding-left: 1.2rem;
+  }
+  .arch-label-wrap {
+    writing-mode: vertical-rl; text-orientation: mixed;
+    transform: rotate(180deg);
+    font-size: .65rem; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--gold); font-weight: 700;
+    min-width: 30px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .arch-cards { display: flex; flex-wrap: wrap; gap: .8rem; flex: 1; }
+  .arch-chip {
+    background: var(--white);
+    border: 1px solid #d5dde8; border-radius: 4px;
+    padding: .65rem 1.1rem;
+    font-size: .82rem; font-weight: 700; color: var(--navy);
+    display: flex; align-items: center; gap: .5rem;
+    white-space: nowrap;
+  }
+  .arch-chip .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0;
+  }
+  .arch-chip .dot.blue  { background: var(--accent); }
+  .arch-chip .dot.green { background: var(--green); }
+  .arch-chip .dot.red   { background: var(--red); }
+
+  /* ── SYNC DIAGRAM ── */
+  .sync-row {
+    display: flex; align-items: flex-start; gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .sync-col {
+    flex: 1; min-width: 240px;
+    background: var(--white); border: 1px solid #d5dde8;
+    border-radius: 6px; padding: 1.4rem;
+  }
+  .sync-col h4 {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.1rem;
+    font-weight: 700; margin-bottom: 1rem; color: var(--navy);
+    padding-bottom: .5rem; border-bottom: 2px solid var(--gold);
+  }
+  .sync-step {
+    display: flex; align-items: flex-start; gap: .7rem;
+    margin-bottom: .85rem;
+  }
+  .sync-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--navy); color: var(--gold); font-size: .7rem;
+    font-weight: 700; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: .1rem;
+  }
+  .sync-text { font-size: .84rem; color: var(--gray); line-height: 1.55; }
+  .sync-text strong { color: var(--navy); }
+  .sync-arrow-col {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding-top: 4rem; color: var(--gold);
+    font-size: 2rem; gap: .3rem;
+  }
+  .sync-arrow-label { font-size: .65rem; color: var(--gray); text-align: center; }
+
+  /* ── TECH STACK TABLE ── */
+  .tech-table {
+    width: 100%; border-collapse: collapse; font-size: .88rem;
+    background: var(--white); border-radius: 6px; overflow: hidden;
+    border: 1px solid #d5dde8;
+  }
+  .tech-table thead { background: var(--navy); color: var(--white); }
+  .tech-table thead th {
+    padding: .9rem 1.2rem; text-align: left;
+    font-size: .72rem; text-transform: uppercase; letter-spacing: .09em;
+  }
+  .tech-table tbody tr { border-bottom: 1px solid #e5eaf2; }
+  .tech-table tbody tr:hover { background: #f7faff; }
+  .tech-table tbody td { padding: .85rem 1.2rem; color: var(--navy); vertical-align: top; }
+  .tech-table tbody td:first-child { font-weight: 700; white-space: nowrap; }
+  .tech-table .badge {
+    display: inline-block; padding: .2rem .6rem;
+    border-radius: 2px; font-size: .68rem; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase; margin-right: .3rem;
+  }
+  .badge-blue   { background: #ddeeff; color: var(--accent); }
+  .badge-green  { background: #d9f0e5; color: var(--green); }
+  .badge-gold   { background: #fdf0d5; color: #7a5010; }
+  .badge-gray   { background: #e8edf5; color: #4a5a6e; }
+
+  /* ── BENEFIT GRID ── */
+  .benefit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .benefit-item {
+    display: flex; align-items: flex-start; gap: .9rem;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(201,151,43,.2);
+    border-radius: 5px; padding: 1.1rem;
+  }
+  .benefit-icon {
+    font-size: 1.5rem; flex-shrink: 0; margin-top: .1rem;
+  }
+  .benefit-text h4 { color: var(--white); font-size: .9rem; margin-bottom: .25rem; }
+  .benefit-text p  { color: #8aa0bb; font-size: .8rem; line-height: 1.5; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy);
+    border-top: 2px solid var(--gold);
+    padding: 1.5rem 6vw;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  footer p { color: #8aa0bb; font-size: .78rem; }
+  footer strong { color: var(--gold); }
+
+  /* ── DIVIDER ── */
+  .gold-rule { width: 60px; height: 3px; background: var(--gold); margin-bottom: 1.5rem; }
+
+  /* ── PILL ── */
+  .pill {
+    display: inline-block; padding: .25rem .75rem;
+    border-radius: 20px; font-size: .72rem; font-weight: 700;
+    letter-spacing: .05em;
+  }
+  .pill-navy { background: var(--navy); color: var(--gold2); }
+  .pill-gold { background: var(--gold); color: var(--navy); }
+
+  /* ── PROCESS NUMBERED LIST ── */
+  .proc-list { display: flex; flex-direction: column; gap: 1rem; }
+  .proc-item {
+    display: flex; align-items: flex-start; gap: 1.1rem;
+    background: var(--white); border: 1px solid #d5dde8;
+    border-radius: 5px; padding: 1.1rem 1.3rem;
+  }
+  .proc-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 700; color: var(--gold);
+    line-height: 1; flex-shrink: 0; min-width: 32px;
+  }
+  .proc-body h4 { font-size: .92rem; font-weight: 700; color: var(--navy); margin-bottom: .25rem; }
+  .proc-body p  { font-size: .84rem; color: var(--gray); line-height: 1.55; }
+
+  /* responsive */
+  @media (max-width: 680px) {
+    .cover-seal { display: none; }
+    section { padding: 6rem 5vw 3rem; }
+    .sync-arrow-col { flex-direction: row; padding-top: 0; padding: .5rem 0; }
+  }
+
+  /* scroll fade-in */
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity .55s ease, transform .55s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* page number watermark */
+  .pg-mark {
+    position: absolute; bottom: 2.5rem; right: 6vw;
+    font-family: 'Cormorant Garamond', serif; font-size: .85rem;
+    color: rgba(201,151,43,.4); letter-spacing: .08em;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-logo">⚖ StallTrack</div>
+  <div class="nav-links">
+    <a href="#cover">Overview</a>
+    <a href="#problem">Problem</a>
+    <a href="#solution">Solution</a>
+    <a href="#flow">System Flow</a>
+    <a href="#screens">App Screens</a>
+    <a href="#sync">Offline Sync</a>
+    <a href="#tech">Tech Stack</a>
+    <a href="#benefits">Benefits</a>
+  </div>
+  <button class="nav-hamburger" id="hamburgerBtn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile nav drawer -->
+<div class="nav-drawer" id="navDrawer">
+  <a href="#cover">Overview</a>
+  <a href="#problem">Problem</a>
+  <a href="#solution">Solution</a>
+  <a href="#flow">System Flow</a>
+  <a href="#screens">App Screens</a>
+  <a href="#sync">Offline Sync</a>
+  <a href="#tech">Tech Stack</a>
+  <a href="#benefits">Benefits</a>
+</div>
+
+<!-- ━━━━━━ COVER ━━━━━━ -->
+<section id="cover">
+  <div class="cover-seal">ST</div>
+  <div class="reveal">
+    <div class="cover-badge"><span>🏛</span> Local Government Unit — Economic Enterprise &amp; Management Office</div>
+    <h1 class="cover-title"><em>StallTrack</em><br>A Digital Management System<br>for Commercial Stall Rents</h1>
+    <p class="cover-sub">
+      A hybrid digital solution that empowers market collectors to record stall rental payments on the field via mobile — and gives the EEMO office real-time visibility through a web-based management dashboard.
+    </p>
+    <div class="cover-meta">
+      <div class="meta-item">
+        <span class="meta-label">Platform</span>
+        <span class="meta-value">Mobile + Web (Hybrid)</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Mobile Framework</span>
+        <span class="meta-value">.NET MAUI Hybrid</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Web Framework</span>
+        <span class="meta-value">Blazor Server</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Database</span>
+        <span class="meta-value">PostgreSQL / SQLite</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Deployment</span>
+        <span class="meta-value">DigitalOcean VPS</span>
+      </div>
+    </div>
+  </div>
+  <div class="pg-mark">01 / 07</div>
+</section>
+
+<!-- ━━━━━━ PROBLEM ━━━━━━ -->
+<section id="problem">
+  <div class="reveal">
+    <div class="section-label">01 — Problem Statement</div>
+    <h2 class="section-title">The Current Manual Process Is Inefficient</h2>
+    <p class="section-lead">
+      The Economic Enterprise &amp; Management Office currently relies on a fully manual collection workflow, causing data redundancy, human error, and delays in financial reporting.
+    </p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">✍️</div>
+        <div class="card-title">Manual Re-Entry of Vendor Names</div>
+        <div class="card-desc">Collectors must re-write or re-type the name of each stall vendor every collection cycle, even though the vendor list is already known and fixed.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Repetitive Data Entry</div>
+        <div class="card-desc">Each transaction requires manually filling in vendor name, stall number, date, type of fee (rental, electric bill, etc.), and amount — every single time.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚠️</div>
+        <div class="card-title">Prone to Human Error</div>
+        <div class="card-desc">Manual writing introduces misspellings, missed entries, and calculation mistakes that are hard to audit and correct after the fact.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <div class="card-title">Delayed Financial Reporting</div>
+        <div class="card-desc">Without real-time recording, the office must wait for collectors to return and encode data before any summary or report can be generated.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🗂️</div>
+        <div class="card-title">No Centralized Record</div>
+        <div class="card-desc">Collected data lives on paper forms that are difficult to search, archive, or cross-reference, making audits time-consuming and unreliable.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📉</div>
+        <div class="card-title">No Visibility for the Office</div>
+        <div class="card-desc">Office supervisors have no way to monitor collection progress in real time — they are blind to who has paid and who has not until forms are returned.</div>
+      </div>
+    </div>
+  </div>
+  <div class="pg-mark">02 / 07</div>
+</section>
+
+<!-- ━━━━━━ SOLUTION ━━━━━━ -->
+<section id="solution" style="background:#f0f4fa;">
+  <div class="reveal">
+    <div class="section-label">02 — Proposed Solution</div>
+    <h2 class="section-title">StallTrack: A Pre-Loaded, Check-and-Submit System</h2>
+    <p class="section-lead">
+      Instead of writing details from scratch, collectors open the mobile app, find the vendor from a pre-loaded list, tick the appropriate fees, enter the amount collected, and submit — in under a minute.
+    </p>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;" class="two-col">
+
+      <!-- Mobile side -->
+      <div>
+        <div class="gold-rule"></div>
+        <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; margin-bottom:1rem;">📱 Mobile App — For Collectors</h3>
+        <div class="proc-list">
+          <div class="proc-item">
+            <div class="proc-num">1</div>
+            <div class="proc-body">
+              <h4>Login &amp; Select Facility</h4>
+              <p>Collector logs in with assigned credentials (admin-created only), then selects a facility from the home menu — New Public Market, Town Center, Terminal, and more.</p>
+            </div>
+          </div>
+          <div class="proc-item">
+            <div class="proc-num">2</div>
+            <div class="proc-body">
+              <h4>Pre-Loaded Stall List per Month</h4>
+              <p>All registered stall vendors are already in the app. Supports search, filter (All / Permanent / Temporary / Paid / Unpaid), and shows the active collection month.</p>
+            </div>
+          </div>
+          <div class="proc-item">
+            <div class="proc-num">3</div>
+            <div class="proc-body">
+              <h4>Status Picker: Paid / Partial / Unpaid</h4>
+              <p>Tapping a stall opens a status picker. If Partial, the collector enters the exact amount collected and the remaining balance is computed automatically.</p>
+            </div>
+          </div>
+          <div class="proc-item">
+            <div class="proc-num">4</div>
+            <div class="proc-body">
+              <h4>4-State Visual Checkboxes</h4>
+              <p>Empty (not visited), Green ✓ (paid), Gold — (partial), Red ✗ (confirmed unpaid) — the collector knows at a glance who they have already approached.</p>
+            </div>
+          </div>
+          <div class="proc-item">
+            <div class="proc-num">5</div>
+            <div class="proc-body">
+              <h4>Works Offline Anytime</h4>
+              <p>All transactions are saved locally on the device using SQLite and queued for automatic sync when internet is restored.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Web side -->
+      <div>
+        <div class="gold-rule"></div>
+        <h3 style="font-family:'Cormorant Garamond',serif; font-size:1.4rem; margin-bottom:1rem;">🖥️ Web Dashboard — For the Office</h3>
+        <div class="proc-list">
+          <div class="proc-item">
+            <div class="proc-num">1</div>
+            <div class="proc-body">
+              <h4>Live Collection Dashboard</h4>
+              <p>The office monitors real-time collection progress — who has paid, who is pending, and facility totals per billing month.</p>
+            </div>
+          </div>
+          <div class="proc-item">
+            <div class="proc-num">2</div>
+            <div class="proc-body">
+              <h4>Manage Vendors, Stalls &amp; Collector Accounts</h4>
+              <p>Add, edit, or deactivate vendor and stall records. Create and manage collector login accounts. Changes sync to mobile instantly.</p>
+            </div>
+          </div>
+          <div class="proc-item">
+            <div class="proc-num">3</div>
+            <div class="proc-body">
+              <h4>Reports: By Facility, By Day, Per Payee</h4>
+              <p>Month-navigable reports showing facility totals, daily breakdowns, and per-payee balance tracking with delinquency status.</p>
+            </div>
+          </div>
+          <div class="proc-item">
+            <div class="proc-num">4</div>
+            <div class="proc-body">
+              <h4>Per-Payee Balance Monitoring</h4>
+              <p>Each payee shows monthly rate, months unpaid, total balance due, and last paid date — sorted by most overdue first for actionable follow-up.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg-mark">03 / 07</div>
+</section>
+
+<!-- ━━━━━━ SYSTEM FLOW ━━━━━━ -->
+<section id="flow">
+  <div class="reveal">
+    <div class="section-label">03 — System Flow</div>
+    <h2 class="section-title">End-to-End Collection Process Flow</h2>
+    <p class="section-lead">
+      From the moment a collector opens the mobile app to the moment the office supervisor views the dashboard — this is the complete lifecycle of a single payment transaction.
+    </p>
+
+    <div class="flow-wrap" style="margin-bottom: 2rem;">
+      <p style="font-size:.72rem; text-transform:uppercase; letter-spacing:.1em; color:var(--gold); margin-bottom:1.2rem; font-weight:700;">📱 Mobile Collection Flow</p>
+      <div class="flow">
+        <div class="flow-node">
+          <div class="flow-box blue">Login</div>
+          <div class="flow-sub">Collector credentials (admin-created)</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box blue">Select Facility</div>
+          <div class="flow-sub">NPM, TCC, Terminal, etc.</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box blue">Stall List</div>
+          <div class="flow-sub">Pre-loaded, search &amp; filter</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box blue">Tap Stall → Status Picker</div>
+          <div class="flow-sub">Paid / Partial / Unpaid</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box gold">If Partial → Enter Amount</div>
+          <div class="flow-sub">Auto-computes remaining balance</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box green">Checkbox Updates</div>
+          <div class="flow-sub">✓ green / — gold / ✗ red • Saved &amp; queued</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-wrap" style="margin-bottom: 2rem;">
+      <p style="font-size:.72rem; text-transform:uppercase; letter-spacing:.1em; color:var(--gold); margin-bottom:1.2rem; font-weight:700;">☁️ Sync &amp; Server Flow</p>
+      <div class="flow">
+        <div class="flow-node">
+          <div class="flow-box green">Internet Available?</div>
+          <div class="flow-sub">App detects connectivity</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box green">Auto-Sync Triggered</div>
+          <div class="flow-sub">Queued SQLite records pushed</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box">.NET Core API</div>
+          <div class="flow-sub">REST API validates &amp; processes</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box">PostgreSQL Cloud</div>
+          <div class="flow-sub">DigitalOcean VPS / Droplet</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box blue">Blazor Dashboard</div>
+          <div class="flow-sub">Office sees updated data instantly</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-wrap">
+      <p style="font-size:.72rem; text-transform:uppercase; letter-spacing:.1em; color:var(--gold); margin-bottom:1.2rem; font-weight:700;">🖥️ Web Office Flow</p>
+      <div class="flow">
+        <div class="flow-node">
+          <div class="flow-box blue">Admin Login</div>
+          <div class="flow-sub">Role-based access</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box blue">Reports Dashboard</div>
+          <div class="flow-sub">By Facility / By Day / Per Payee</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box blue">Per-Payee Balance</div>
+          <div class="flow-sub">Months unpaid • Balance due • Last paid</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box blue">Records (12-Month Tabs)</div>
+          <div class="flow-sub">Searchable • Filterable by facility</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-box gold">Manage Vendors &amp; Collectors</div>
+          <div class="flow-sub">Create accounts • Add / edit stalls</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="pg-mark">05 / 08</div>
+</section>
+
+<!-- ━━━━━━ OFFLINE SYNC ━━━━━━ -->
+<section id="sync" style="background:#f0f4fa;">
+  <div class="reveal">
+    <div class="section-label">04 — Offline-First Architecture</div>
+    <h2 class="section-title">How the Offline Sync Works</h2>
+    <p class="section-lead">
+      Markets often have poor connectivity. StallTrack is built offline-first — collectors never lose data, and syncing happens automatically in the background when a connection is available.
+    </p>
+
+    <div class="sync-row">
+      <div class="sync-col" style="border-top: 3px solid var(--accent);">
+        <h4>📵 When Offline (No Internet)</h4>
+        <div class="sync-step">
+          <div class="sync-num">1</div>
+          <div class="sync-text">App detects <strong>no internet connection</strong> on startup or during collection.</div>
+        </div>
+        <div class="sync-step">
+          <div class="sync-num">2</div>
+          <div class="sync-text">All transactions are recorded and saved in the <strong>local SQLite database</strong> on the device.</div>
+        </div>
+        <div class="sync-step">
+          <div class="sync-num">3</div>
+          <div class="sync-text">The app shows an <strong>"Offline — Data Queued"</strong> indicator so the collector knows the status.</div>
+        </div>
+        <div class="sync-step">
+          <div class="sync-num">4</div>
+          <div class="sync-text">The collector can <strong>continue working normally</strong> — no interruption in the collection process.</div>
+        </div>
+      </div>
+
+      <div class="sync-arrow-col">
+        <div>⇄</div>
+        <div class="sync-arrow-label">Connection<br>Restored</div>
+      </div>
+
+      <div class="sync-col" style="border-top: 3px solid var(--green);">
+        <h4>🌐 When Back Online (Internet Restored)</h4>
+        <div class="sync-step">
+          <div class="sync-num">1</div>
+          <div class="sync-text">App automatically <strong>detects internet restoration</strong> in the background.</div>
+        </div>
+        <div class="sync-step">
+          <div class="sync-num">2</div>
+          <div class="sync-text">All queued SQLite records are <strong>batched and sent</strong> to the .NET Core API via HTTPS.</div>
+        </div>
+        <div class="sync-step">
+          <div class="sync-num">3</div>
+          <div class="sync-text">The API validates each record and <strong>writes them to PostgreSQL</strong> on the cloud server.</div>
+        </div>
+        <div class="sync-step">
+          <div class="sync-num">4</div>
+          <div class="sync-text">SQLite queue is <strong>cleared</strong> and the app shows a <strong>"Synced ✓"</strong> confirmation to the collector.</div>
+        </div>
+        <div class="sync-step">
+          <div class="sync-num">5</div>
+          <div class="sync-text">The <strong>Blazor web dashboard</strong> updates in real time — the office now sees the newly synced transactions.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conflict note -->
+    <div style="margin-top:1.5rem; background:#fff8e8; border:1px solid var(--gold); border-left:4px solid var(--gold); border-radius:4px; padding:1rem 1.3rem;">
+      <strong style="font-size:.82rem; color:#7a5010;">📌 Note on Data Integrity:</strong>
+      <p style="font-size:.82rem; color:var(--gray); margin-top:.3rem; line-height:1.6;">
+        Each transaction record includes a <strong>unique device-generated UUID</strong>, <strong>timestamp</strong>, and <strong>collector ID</strong> before being queued. This ensures that when multiple collectors sync simultaneously, there are no duplicates or data conflicts on the central database.
+      </p>
+    </div>
+  </div>
+  <div class="pg-mark">06 / 08</div>
+</section>
+
+<!-- ━━━━━━ TECH STACK ━━━━━━ -->
+<section id="tech">
+  <div class="reveal">
+    <div class="section-label">05 — System Architecture &amp; Technology Stack</div>
+    <h2 class="section-title">Technology Components</h2>
+    <p class="section-lead">
+      StallTrack uses a modern, proven Microsoft .NET ecosystem paired with industry-standard open-source database technologies, deployed on a scalable cloud infrastructure.
+    </p>
+
+    <!-- Architecture Layers -->
+    <div class="arch" style="margin-bottom:2rem;">
+      <div class="arch-layer">
+        <div class="arch-label-wrap">Presentation</div>
+        <div class="arch-cards">
+          <div class="arch-chip"><div class="dot blue"></div>.NET MAUI Hybrid — Mobile App (iOS / Android)</div>
+          <div class="arch-chip"><div class="dot blue"></div>Blazor Server — Web Dashboard (Office)</div>
+        </div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-label-wrap">Business Logic</div>
+        <div class="arch-cards">
+          <div class="arch-chip"><div class="dot"></div>.NET Core — REST API &amp; Business Rules</div>
+          <div class="arch-chip"><div class="dot"></div>Entity Framework Core — ORM</div>
+          <div class="arch-chip"><div class="dot"></div>Authentication (JWT / Role-Based)</div>
+        </div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-label-wrap">Data Layer</div>
+        <div class="arch-cards">
+          <div class="arch-chip"><div class="dot green"></div>PostgreSQL — Cloud Database (DigitalOcean)</div>
+          <div class="arch-chip"><div class="dot green"></div>SQLite — Local Offline Storage (Mobile)</div>
+        </div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-label-wrap">Infrastructure</div>
+        <div class="arch-cards">
+          <div class="arch-chip"><div class="dot red"></div>DigitalOcean Droplet (VPS)</div>
+          <div class="arch-chip"><div class="dot red"></div>HTTPS / SSL Certificate</div>
+          <div class="arch-chip"><div class="dot red"></div>Nginx Reverse Proxy</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Table -->
+    <table class="tech-table">
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Technology</th>
+          <th>Purpose</th>
+          <th>Environment</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-label="Component">Mobile Application</td>
+          <td data-label="Technology"><span class="badge badge-blue">.NET MAUI Hybrid</span></td>
+          <td data-label="Purpose">Collector's field application for recording payments on smartphones</td>
+          <td data-label="Environment"><span class="badge badge-gray">iOS / Android</span></td>
+        </tr>
+        <tr>
+          <td data-label="Component">Web Dashboard</td>
+          <td data-label="Technology"><span class="badge badge-blue">Blazor Server</span></td>
+          <td data-label="Purpose">Real-time office monitoring, reporting, and vendor management</td>
+          <td data-label="Environment"><span class="badge badge-gray">Browser (PC/Laptop)</span></td>
+        </tr>
+        <tr>
+          <td data-label="Component">Backend API</td>
+          <td data-label="Technology"><span class="badge badge-blue">.NET Core</span></td>
+          <td data-label="Purpose">Handles all business logic, sync validation, and data access</td>
+          <td data-label="Environment"><span class="badge badge-gray">Server-side</span></td>
+        </tr>
+        <tr>
+          <td data-label="Component">Cloud Database</td>
+          <td data-label="Technology"><span class="badge badge-green">PostgreSQL</span></td>
+          <td data-label="Purpose">Central relational database storing all transactions and vendor records</td>
+          <td data-label="Environment"><span class="badge badge-gray">DigitalOcean VPS</span></td>
+        </tr>
+        <tr>
+          <td data-label="Component">Local Offline DB</td>
+          <td data-label="Technology"><span class="badge badge-green">SQLite</span></td>
+          <td data-label="Purpose">On-device storage for queuing transactions when the internet is unavailable</td>
+          <td data-label="Environment"><span class="badge badge-gray">Mobile Device</span></td>
+        </tr>
+        <tr>
+          <td data-label="Component">Cloud Hosting</td>
+          <td data-label="Technology"><span class="badge badge-gold">DigitalOcean Droplet</span></td>
+          <td data-label="Purpose">Virtual private server hosting the API, Blazor web app, and PostgreSQL</td>
+          <td data-label="Environment"><span class="badge badge-gray">Cloud / VPS</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pg-mark">07 / 08</div>
+</section>
+
+<!-- ━━━━━━ BENEFITS ━━━━━━ -->
+<section id="benefits" class="dark">
+  <div class="reveal">
+    <div class="section-label" style="color:var(--gold2);">06 — Expected Impact</div>
+    <h2 class="section-title">Key Benefits for the EEMO</h2>
+    <p class="section-lead" style="margin-bottom:2rem;">
+      StallTrack directly addresses each pain point in the current workflow, reducing administrative burden and improving financial transparency for the local government unit.
+    </p>
+    <div class="benefit-grid">
+      <div class="benefit-item">
+        <div class="benefit-icon">⚡</div>
+        <div class="benefit-text">
+          <h4>Faster Collections</h4>
+          <p>Collectors no longer re-write names, dates, or stall numbers. A single collection is recorded in under a minute.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">🎯</div>
+        <div class="benefit-text">
+          <h4>Reduced Human Error</h4>
+          <p>Pre-loaded data eliminates misspellings and missed fields. Data entry is limited to variable fields only (amount, date status).</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">📡</div>
+        <div class="benefit-text">
+          <h4>Real-Time Visibility</h4>
+          <p>The office monitors live collection progress without waiting for collectors to return and encode paper forms.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">📶</div>
+        <div class="benefit-text">
+          <h4>Offline Resilience</h4>
+          <p>Collections continue uninterrupted even in areas with poor connectivity. Data is never lost — only queued.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">📊</div>
+        <div class="benefit-text">
+          <h4>Instant Reports</h4>
+          <p>Financial summaries per vendor, per stall zone, per collector, or per billing period are generated automatically.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">🔒</div>
+        <div class="benefit-text">
+          <h4>Secure Audit Trail</h4>
+          <p>Every transaction is logged with the collector's identity and timestamp — enabling full accountability and auditability.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">📂</div>
+        <div class="benefit-text">
+          <h4>Centralized Records</h4>
+          <p>All data is consolidated in one cloud database, eliminating paper forms and fragmented spreadsheets.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">🔄</div>
+        <div class="benefit-text">
+          <h4>Scalable System</h4>
+          <p>New stalls, vendors, fee types, or collectors can be added at any time through the web dashboard — no code changes needed.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">⚠️</div>
+        <div class="benefit-text">
+          <h4>Delinquency Detection</h4>
+          <p>The Per Payee report automatically flags payors as Up to Date, Overdue (1–2 months), or Delinquent (3+ months) — sorted by worst cases first so the office knows exactly who to follow up on.</p>
+        </div>
+      </div>
+      <div class="benefit-item">
+        <div class="benefit-icon">💰</div>
+        <div class="benefit-text">
+          <h4>Partial Payment Tracking</h4>
+          <p>Partial payments are recorded with the exact amount collected. The remaining balance is automatically computed and visible in both the market stall list and collection record detail sheets.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary box -->
+    <div style="margin-top:2rem; background:rgba(201,151,43,.12); border:1px solid rgba(201,151,43,.3); border-radius:6px; padding:1.5rem; display:flex; align-items:flex-start; gap:1rem;">
+      <div style="font-size:2rem; flex-shrink:0;">🏛</div>
+      <div>
+        <h4 style="color:var(--gold2); font-size:1rem; margin-bottom:.4rem;">Summary Statement</h4>
+        <p style="color:#a0b4cc; font-size:.88rem; line-height:1.7;">
+          <strong style="color:var(--white);">StallTrack</strong> transforms the EEMO's stall rental collection from a paper-based, error-prone manual process into a <strong style="color:var(--gold2);">fast, digital, and data-driven system</strong> — accessible from the field on a mobile phone and from the office on a web browser, with automatic cloud synchronization and full offline support.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="pg-mark" style="color:rgba(201,151,43,.35);">08 / 08</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Prepared for: <strong>Economic Enterprise &amp; Management Office — Local Government Unit</strong></p>
+  <p style="color:#5a6a7e; font-family:'Fira Mono',monospace; font-size:.72rem;">EEMO Collectors App v1.0 · StallTrack · Capstone Proposal · 2025–2026</p>
+</footer>
+
+<!-- ── HAMBURGER BUTTON (mobile only) ── -->
+<style>
+  .nav-hamburger {
+    display: none;
+    flex-direction: column; justify-content: center; align-items: center;
+    gap: 5px; width: 36px; height: 36px;
+    background: none; border: none; cursor: pointer; padding: 4px;
+    flex-shrink: 0;
+  }
+  .nav-hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--gold); border-radius: 2px;
+    transition: transform .3s, opacity .3s;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Mobile drawer */
+  .nav-drawer {
+    display: none;
+    position: fixed; top: 54px; left: 0; right: 0; z-index: 99;
+    background: var(--navy);
+    border-bottom: 2px solid var(--gold);
+    flex-direction: column;
+    padding: .75rem 1.2rem 1rem;
+    gap: .15rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  }
+  .nav-drawer.open { display: flex; }
+  .nav-drawer a {
+    color: #a0b4cc; font-size: .8rem; text-transform: uppercase;
+    letter-spacing: .08em; text-decoration: none;
+    padding: .65rem .9rem; border-radius: 4px;
+    transition: color .2s, background .2s;
+    border-left: 2px solid transparent;
+  }
+  .nav-drawer a:hover,
+  .nav-drawer a:active { color: var(--gold2); background: rgba(201,151,43,.1); border-left-color: var(--gold); }
+</style>
+
+<!-- ── FULL RESPONSIVE STYLES ── -->
+<style>
+  /* ─ TABLET (≤900px) ─ */
+  @media (max-width: 900px) {
+    .two-col { grid-template-columns: 1fr !important; }
+
+    .arch-chip { white-space: normal; }
+
+    .cover-meta { gap: 1.2rem; }
+  }
+
+  /* ─ MOBILE (≤680px) ─ */
+  @media (max-width: 680px) {
+
+    /* NAV */
+    .nav-links { display: none !important; }
+    .nav-hamburger { display: flex; }
+    nav { padding: 0 1rem; }
+
+    /* SECTIONS */
+    section {
+      padding: 5.5rem 5vw 3rem;
+      min-height: auto;
+    }
+
+    /* COVER */
+    .cover-seal { display: none; }
+    h1.cover-title { font-size: clamp(1.9rem, 7vw, 2.6rem); }
+    .cover-sub { font-size: .93rem; }
+    .cover-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .9rem 1.4rem;
+    }
+    .cover-badge { font-size: .67rem; }
+
+    /* PAGE MARK */
+    .pg-mark { display: none; }
+
+    /* SECTION HEADERS */
+    h2.section-title { font-size: clamp(1.5rem, 6vw, 2rem); }
+    .section-lead { font-size: .92rem; margin-bottom: 1.5rem; }
+
+    /* CARDS */
+    .card-grid { grid-template-columns: 1fr; }
+    .card { padding: 1.1rem; }
+
+    /* FLOW DIAGRAMS — vertical on mobile */
+    .flow-wrap { padding: 1.2rem; }
+    .flow {
+      flex-direction: column;
+      align-items: stretch;
+      min-width: unset;
+      gap: 0;
+    }
+    .flow-node {
+      flex-direction: row;
+      align-items: center;
+      text-align: left;
+      gap: .75rem;
+      min-width: unset;
+      padding: .2rem 0;
+    }
+    .flow-box {
+      width: auto;
+      flex: 0 0 140px;
+      font-size: .75rem;
+      padding: .6rem .8rem;
+    }
+    .flow-sub {
+      font-size: .68rem;
+      max-width: none;
+      flex: 1;
+    }
+    .flow-arrow {
+      transform: rotate(90deg);
+      display: block;
+      text-align: center;
+      margin: .1rem 0 .1rem 56px;
+      font-size: 1.1rem;
+    }
+
+    /* ARCH LAYER */
+    .arch-layer {
+      flex-direction: column;
+      gap: .6rem;
+      padding-left: .9rem;
+    }
+    .arch-label-wrap {
+      writing-mode: horizontal-tb;
+      transform: none;
+      font-size: .65rem;
+      min-width: unset;
+      justify-content: flex-start;
+      padding-bottom: .2rem;
+      border-bottom: 1px solid rgba(201,151,43,.3);
+    }
+    .arch-chip {
+      white-space: normal;
+      font-size: .78rem;
+    }
+
+    /* TECH TABLE → card layout */
+    .tech-table { font-size: .82rem; }
+    .tech-table thead { display: none; }
+    .tech-table tbody tr {
+      display: block;
+      margin-bottom: .9rem;
+      border: 1px solid #d5dde8;
+      border-radius: 6px;
+      overflow: hidden;
+      border-bottom: 1px solid #d5dde8 !important;
+    }
+    .tech-table tbody td {
+      display: flex;
+      flex-direction: column;
+      gap: .2rem;
+      padding: .6rem .9rem;
+      border-bottom: 1px solid #eef2f8;
+    }
+    .tech-table tbody td:last-child { border-bottom: none; }
+    .tech-table tbody td::before {
+      content: attr(data-label);
+      font-size: .62rem; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--gold);
+      font-weight: 700;
+    }
+    .tech-table tbody td:first-child {
+      background: var(--navy); color: var(--white);
+      font-size: .85rem;
+    }
+    .tech-table tbody td:first-child::before { color: var(--gold2); }
+
+    /* SYNC */
+    .sync-row { flex-direction: column; gap: 0; }
+    .sync-arrow-col {
+      flex-direction: row;
+      padding: .6rem 0;
+      justify-content: center;
+      gap: .5rem;
+    }
+    .sync-col { min-width: unset; }
+
+    /* PROC LIST */
+    .proc-item { padding: .9rem 1rem; }
+    .proc-num { font-size: 1.4rem; }
+
+    /* BENEFIT GRID */
+    .benefit-grid { grid-template-columns: 1fr; }
+    .benefit-item { padding: .9rem; }
+
+    /* FOOTER */
+    footer {
+      flex-direction: column;
+      text-align: center;
+      gap: .5rem;
+      padding: 1.2rem 5vw;
+    }
+    footer p { font-size: .75rem; }
+
+    /* GOLD RULE */
+    .gold-rule { margin-bottom: 1rem; }
+
+    /* SUMMARY BOX */
+    #benefits .reveal > div:last-child {
+      flex-direction: column;
+    }
+  }
+
+  /* ─ VERY SMALL (≤390px) ─ */
+  @media (max-width: 390px) {
+    h1.cover-title { font-size: 1.75rem; }
+    .cover-meta { grid-template-columns: 1fr; }
+    .flow-box { flex: 0 0 120px; font-size: .72rem; }
+  }
+</style>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.06 });
+  reveals.forEach(el => io.observe(el));
+
+  // Hamburger nav toggle
+  const hamburger = document.getElementById('hamburgerBtn');
+  const drawer    = document.getElementById('navDrawer');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    drawer.classList.toggle('open');
+  });
+  // Close drawer when a link is tapped
+  drawer.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      drawer.classList.remove('open');
+    });
+  });
+</script>
+</body>
+</html>
